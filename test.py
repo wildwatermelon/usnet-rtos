@@ -74,7 +74,7 @@ def main(params):
     parser.add_argument('--batch_size', type=int, default=1, help='Number of images in each batch')
     parser.add_argument('--backbone_name', type=str, default="resnet18", help='The backbone model you are using.')
     parser.add_argument('--cuda', type=str, default='0', help='GPU ids used for training')
-    parser.add_argument('--use_gpu', type=bool, default=False, help='Whether to user gpu for training')
+    parser.add_argument('--use_gpu', type=bool, default=True, help='Whether to user gpu for training')
     parser.add_argument('--num_classes', type=int, default=2, help='num of object classes (with void)')
     parser.add_argument('--save_path', type=str, default=None, required=True, help='Path to save predict image')
     args = parser.parse_args(params)
@@ -117,5 +117,6 @@ if __name__ == '__main__':
         '--cuda', '0',
         '--num_classes', '2',
         '--save_path', './result/kitti_test',
+        '--use_gpu', 'False',
     ]
     main(params)
