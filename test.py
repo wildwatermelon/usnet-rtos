@@ -41,6 +41,7 @@ def test(args, model, dataloader):
             visualize = np.floor(255*(visualize - visualize.min()) / (visualize.max()-visualize.min()))
             img_path = sample['img_path'][0]
             img_name = img_path.split('/')[-1]
+            #save_name = img_name.split('_')[0] + '_road_' + img_name.split('_')[1]
             save_name = img_name.split('_')[0]+'_road_'+img_name.split('_')[1]+".png"
             cv2.imwrite(os.path.join(args.save_path, save_name), np.uint8(visualize))
 
