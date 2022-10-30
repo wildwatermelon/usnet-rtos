@@ -41,7 +41,7 @@ def test(args, model, dataloader):
             visualize = np.floor(255*(visualize - visualize.min()) / (visualize.max()-visualize.min()))
             img_path = sample['img_path'][0]
             img_name = img_path.split('/')[-1]
-            save_name = img_name.split('_')[0]+'_road_'+img_name.split('_')[1]
+            save_name = img_name.split('_')[0]+'_road_'+img_name.split('_')[1]+".png"
             cv2.imwrite(os.path.join(args.save_path, save_name), np.uint8(visualize))
 
             pred = np.uint8(pred > 0.5)
@@ -74,7 +74,7 @@ def main(params):
     parser.add_argument('--batch_size', type=int, default=1, help='Number of images in each batch')
     parser.add_argument('--backbone_name', type=str, default="resnet18", help='The backbone model you are using.')
     parser.add_argument('--cuda', type=str, default='0', help='GPU ids used for training')
-    parser.add_argument('--use_gpu', type=bool, default=True, help='Whether to user gpu for training')
+    parser.add_argument('--use_gpu', type=bool, default=False, help='Whether to user gpu for training')
     parser.add_argument('--num_classes', type=int, default=2, help='num of object classes (with void)')
     parser.add_argument('--save_path', type=str, default=None, required=True, help='Path to save predict image')
     args = parser.parse_args(params)
@@ -95,7 +95,10 @@ def main(params):
 
     # load trained model
     print('load model from %s ...' % args.checkpoint_path)
-    model.module.load_state_dict(torch.load(args.checkpoint_path))
+    if torch.cuda.is_available() and args.use_gpu:
+        model.load_state_dict(torch.load(args.checkpoint_path))
+    else:
+        model.load_state_dict(torch.load(args.checkpoint_path, map_location=torch.device('cpu')))
     print('Done!')
 
     # make save folder

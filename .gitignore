@@ -10,3 +10,4 @@ __pycache__/*
 result/*
 data/*
 log/*
+gt_image_2/*
