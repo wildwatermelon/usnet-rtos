@@ -42,7 +42,8 @@ def test(args, model, dataloader):
             img_path = sample['img_path'][0]
             img_name = img_path.split('/')[-1]
             #save_name = img_name.split('_')[0] + '_road_' + img_name.split('_')[1]
-            save_name = img_name.split('_')[0]+'_road_'+img_name.split('_')[1]+".png"
+            save_name = img_name.split('_')[0]+'_road_'+img_name.split('_')[1]+'_'+img_name.split('_')[2]
+            print(os.path.join(args.save_path, save_name))
             cv2.imwrite(os.path.join(args.save_path, save_name), np.uint8(visualize))
 
             pred = np.uint8(pred > 0.5)
