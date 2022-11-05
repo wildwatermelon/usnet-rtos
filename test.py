@@ -54,8 +54,37 @@ def test(args, model, dataloader):
                 cv2.waitKey(0)
 
             img_o = cv2.imread(sample['img_path'][0], 0)
-            im_h = cv2.hconcat([img_o, np.uint8(visualize)])
-            cv2.imwrite(os.path.join(args.save_path, save_name), im_h)
+            img_p = np.uint8(visualize)
+
+#region path planning
+
+            img_p2 = img_p.copy()
+
+            img_p2_height, img_p2_width = img_p2.shape
+            img_p2_height_cutoff = img_p2_height // 20
+
+            img_p2_slice_height_offset = img_p2_height_cutoff
+
+            for x in range(10):
+                img_p2_slice_start = img_p2_height - img_p2_slice_height_offset + img_p2_height_cutoff
+                img_p2_slice_end = img_p2_height - img_p2_slice_height_offset
+
+                img_p2_slice = img_p2[img_p2_slice_end : img_p2_slice_start,:]
+
+                centroid = np.mean(np.argwhere(img_p2_slice), axis=0)
+
+                if np.isnan(centroid).any():
+                    continue
+                else:
+                    centroid_x, centroid_y = int(centroid[1]), int(centroid[0])
+                    img_p2 = cv2.circle(img_p2, (centroid_x, img_p2_height - img_p2_slice_height_offset + img_p2_height_cutoff - centroid_y), radius=0, color=(0, 0, 0), thickness=2)
+                    img_p2 = cv2.circle(img_p2, (img_p2_width // 2, img_p2_height - img_p2_slice_height_offset + img_p2_height_cutoff - centroid_y),radius=1, color=(0, 0, 0), thickness=2)
+
+                img_p2_slice_height_offset += img_p2_height_cutoff
+
+            #img_h = cv2.hconcat([img_o, img_p, img_p2])
+            img_h = cv2.hconcat([img_o, img_p2])
+            cv2.imwrite(os.path.join(args.save_path, save_name), img_h)
             # cv2.imwrite(os.path.join(args.save_path, save_name), np.uint8(visualize))
 
             pred = np.uint8(pred > 0.5)
