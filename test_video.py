@@ -10,8 +10,6 @@ from utils import fast_hist, getScores
 
 
 def test(args, model, dataloader):
-    print_prediction_image = False
-
     print('start test!')
     with torch.no_grad():
         model.eval()
@@ -26,7 +24,8 @@ def test(args, model, dataloader):
                 image = image.cuda()
                 depth = depth.cuda()
                 label = label.cuda()
-
+            
+            # get predict image
             evidence, evidence_a, alpha, alpha_a = model(image, depth)
 
             s = torch.sum(alpha_a, dim=1, keepdim=True)
@@ -45,18 +44,7 @@ def test(args, model, dataloader):
             #save_name = img_name.split('_')[0] + '_road_' + img_name.split('_')[1]
             save_name = img_name.split('_')[0]+'_road_'+img_name.split('_')[1]+'_'+img_name.split('_')[2]
             print(os.path.join(args.save_path, save_name))
-
-            # get predict image
-            if print_prediction_image:
-                print(sample['img_path'])
-                img_show = cv2.imread(sample['img_path'][0], 0)
-                cv2.imshow('image', img_show)
-                cv2.waitKey(0)
-
-            img_o = cv2.imread(sample['img_path'][0], 0)
-            im_h = cv2.hconcat([img_o, np.uint8(visualize)])
-            cv2.imwrite(os.path.join(args.save_path, save_name), im_h)
-            # cv2.imwrite(os.path.join(args.save_path, save_name), np.uint8(visualize))
+            cv2.imwrite(os.path.join(args.save_path, save_name), np.uint8(visualize))
 
             pred = np.uint8(pred > 0.5)
             pred = cv2.resize(pred, (oriWidth, oriHeight), interpolation=cv2.INTER_NEAREST)
@@ -92,9 +80,8 @@ def main(params):
     parser.add_argument('--num_classes', type=int, default=2, help='num of object classes (with void)')
     parser.add_argument('--save_path', type=str, default=None, required=True, help='Path to save predict image')
     args = parser.parse_args(params)
-
-    dataset = Kitti_Dataset(args, root=args.data, split='testing')
-    #dataset = Kitti_Dataset(args, root=args.data, split='validating')
+    
+    dataset = Kitti_Dataset(args, root=args.data, split='validating')
     dataloader = DataLoader(
         dataset,
         batch_size=args.batch_size,
