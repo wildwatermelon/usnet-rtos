@@ -81,7 +81,7 @@ def test(args, model, dataloader):
                     img_p2 = cv2.circle(img_p2, (img_p2_width // 2, img_p2_height - img_p2_slice_height_offset + img_p2_height_cutoff - centroid_y),radius=1, color=(0, 0, 0), thickness=2)
 
                 img_p2_slice_height_offset += img_p2_height_cutoff
-
+#endregion
             #img_h = cv2.hconcat([img_o, img_p, img_p2])
             img_h = cv2.hconcat([img_o, img_p2])
             cv2.imwrite(os.path.join(args.save_path, save_name), img_h)
