@@ -1,7 +1,9 @@
 # usnet-rtos
 
+### sample output
+![](./img/um_000000.png)
 
-### Citation
+### citation
 
 code adapted from https://github.com/morancyc/USNet
 
